@@ -1,0 +1,279 @@
+/* ============================================================
+   Career House 职业小屋 - 品牌样式与设计变量
+   风格: 专业科技 + 游戏化趣味 / 蓝绿主色 + 暖橙点缀
+   ============================================================ */
+
+:root {
+  /* === 品牌主色 (蓝绿色系 - 专业、信赖、科技感) === */
+  --ch-primary-50:  #f0f9f7;
+  --ch-primary-100: #d9f0ea;
+  --ch-primary-200: #b3e0d5;
+  --ch-primary-300: #80c9b8;
+  --ch-primary-400: #4aaf97;
+  --ch-primary-500: #26967c;
+  --ch-primary-600: #1b7964;
+  --ch-primary-700: #186152;
+  --ch-primary-800: #164e43;
+  --ch-primary-900: #144038;
+
+  /* === 暖橙点缀色 (游戏化、活力、成就感) === */
+  --ch-accent-50:  #fff7ed;
+  --ch-accent-100: #ffedd5;
+  --ch-accent-200: #fed7aa;
+  --ch-accent-300: #fdba74;
+  --ch-accent-400: #fb923c;
+  --ch-accent-500: #f97316;
+  --ch-accent-600: #ea580c;
+  --ch-accent-700: #c2410c;
+  --ch-accent-800: #9a3412;
+  --ch-accent-900: #7c2d12;
+
+  /* === 中性色 === */
+  --ch-gray-50:  #f9fafb;
+  --ch-gray-100: #f3f4f6;
+  --ch-gray-200: #e5e7eb;
+  --ch-gray-300: #d1d5db;
+  --ch-gray-400: #9ca3af;
+  --ch-gray-500: #6b7280;
+  --ch-gray-600: #4b5563;
+  --ch-gray-700: #374151;
+  --ch-gray-800: #1f2937;
+  --ch-gray-900: #111827;
+
+  /* === 状态色 === */
+  --state-success: #10b981;
+  --state-warning: #f59e0b;
+  --state-error:   #ef4444;
+  --state-info:    #3b82f6;
+
+  /* === 语义别名 === */
+  --ch-background:        var(--ch-gray-50);
+  --ch-foreground:        var(--ch-gray-900);
+  --ch-card:              #ffffff;
+  --ch-card-foreground:   var(--ch-gray-900);
+  --ch-popover:           #ffffff;
+  --ch-popover-foreground: var(--ch-gray-900);
+  --ch-primary:           var(--ch-primary-500);
+  --ch-primary-foreground: #ffffff;
+  --ch-muted:             var(--ch-gray-100);
+  --ch-muted-foreground:  var(--ch-gray-500);
+  --ch-border:            var(--ch-gray-200);
+  --ch-input:             var(--ch-gray-200);
+  --ch-ring:              var(--ch-primary-500);
+
+  /* === 圆角 === */
+  --ch-radius-sm: 6px;
+  --ch-radius-md: 10px;
+  --ch-radius-lg: 16px;
+  --ch-radius-full: 9999px;
+
+  /* === 阴影 (仅浮动层使用深度阴影) === */
+  --ch-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --ch-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --ch-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.10);
+  --ch-shadow-xl: 0 24px 48px rgba(0, 0, 0, 0.12);
+
+  /* === 字体 === */
+  --ch-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+                   'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+                   'Noto Sans SC', sans-serif;
+  --ch-font-display: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+
+  /* === 字号 === */
+  --ch-text-xs:   12px;
+  --ch-text-sm:   14px;
+  --ch-text-base: 16px;
+  --ch-text-lg:   18px;
+  --ch-text-xl:   20px;
+  --ch-text-2xl:  24px;
+  --ch-text-3xl:  30px;
+  --ch-text-4xl:  36px;
+  --ch-text-5xl:  48px;
+
+  /* === 间距 === */
+  --ch-space-1: 4px;
+  --ch-space-2: 8px;
+  --ch-space-3: 12px;
+  --ch-space-4: 16px;
+  --ch-space-5: 20px;
+  --ch-space-6: 24px;
+  --ch-space-8: 32px;
+  --ch-space-10: 40px;
+  --ch-space-12: 48px;
+  --ch-space-16: 64px;
+}
+
+/* === 深色模式 === */
+html.dark {
+  --ch-background:      var(--ch-gray-900);
+  --ch-foreground:      var(--ch-gray-50);
+  --ch-card:            var(--ch-gray-800);
+  --ch-card-foreground: var(--ch-gray-50);
+  --ch-popover:         var(--ch-gray-800);
+  --ch-popover-foreground: var(--ch-gray-50);
+  --ch-muted:           var(--ch-gray-700);
+  --ch-muted-foreground: var(--ch-gray-400);
+  --ch-border:          var(--ch-gray-700);
+  --ch-input:           var(--ch-gray-700);
+}
+
+/* === 基础排版 === */
+body {
+  font-family: var(--ch-font-sans);
+  font-size: var(--ch-text-base);
+  line-height: 1.6;
+  color: var(--ch-foreground);
+  background-color: var(--ch-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--ch-font-display);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+/* === 通用工具类 === */
+.ch-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--ch-space-6);
+}
+
+.ch-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ch-space-2);
+  padding: var(--ch-space-3) var(--ch-space-6);
+  font-size: var(--ch-text-sm);
+  font-weight: 600;
+  border-radius: var(--ch-radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.ch-btn-primary {
+  background: var(--ch-primary-500);
+  color: #fff;
+  box-shadow: var(--ch-shadow-sm);
+}
+.ch-btn-primary:hover {
+  background: var(--ch-primary-600);
+  transform: translateY(-1px);
+  box-shadow: var(--ch-shadow-md);
+}
+
+.ch-btn-accent {
+  background: var(--ch-accent-500);
+  color: #fff;
+  box-shadow: var(--ch-shadow-sm);
+}
+.ch-btn-accent:hover {
+  background: var(--ch-accent-600);
+  transform: translateY(-1px);
+  box-shadow: var(--ch-shadow-md);
+}
+
+.ch-btn-outline {
+  background: transparent;
+  color: var(--ch-primary-600);
+  border: 1.5px solid var(--ch-primary-200);
+}
+.ch-btn-outline:hover {
+  background: var(--ch-primary-50);
+  border-color: var(--ch-primary-300);
+}
+
+.ch-btn-ghost {
+  background: transparent;
+  color: var(--ch-gray-600);
+}
+.ch-btn-ghost:hover {
+  background: var(--ch-gray-100);
+}
+
+.ch-card {
+  background: var(--ch-card);
+  border: 1px solid var(--ch-border);
+  border-radius: var(--ch-radius-lg);
+  box-shadow: var(--ch-shadow-sm);
+}
+
+.ch-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  font-size: var(--ch-text-xs);
+  font-weight: 500;
+  border-radius: var(--ch-radius-full);
+  background: var(--ch-primary-50);
+  color: var(--ch-primary-700);
+  border: 1px solid var(--ch-primary-100);
+}
+
+.ch-badge-accent {
+  background: var(--ch-accent-50);
+  color: var(--ch-accent-700);
+  border-color: var(--ch-accent-200);
+}
+
+.ch-input {
+  width: 100%;
+  padding: var(--ch-space-3) var(--ch-space-4);
+  font-size: var(--ch-text-sm);
+  border: 1.5px solid var(--ch-gray-200);
+  border-radius: var(--ch-radius-md);
+  background: #fff;
+  color: var(--ch-foreground);
+  transition: all 0.2s ease;
+  outline: none;
+}
+.ch-input:focus {
+  border-color: var(--ch-primary-400);
+  box-shadow: 0 0 0 3px var(--ch-primary-100);
+}
+
+.ch-text-muted { color: var(--ch-muted-foreground); }
+.ch-text-primary { color: var(--ch-primary-600); }
+.ch-text-accent { color: var(--ch-accent-600); }
+
+/* === 渐变背景 === */
+.ch-gradient-hero {
+  background: linear-gradient(135deg,
+    var(--ch-primary-50) 0%,
+    #e8f5f0 30%,
+    var(--ch-accent-50) 100%);
+}
+
+.ch-gradient-card {
+  background: linear-gradient(135deg,
+    var(--ch-primary-500) 0%,
+    var(--ch-primary-600) 100%);
+}
+
+/* === 动画 === */
+@keyframes ch-fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ch-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+@keyframes ch-pulse-soft {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.7; }
+}
+
+.ch-animate-fadeIn { animation: ch-fadeIn 0.5s ease-out; }
+.ch-animate-float  { animation: ch-float 3s ease-in-out infinite; }
+.ch-animate-pulse  { animation: ch-pulse-soft 2s ease-in-out infinite; }
