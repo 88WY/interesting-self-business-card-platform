@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全景小屋展示 - 职业小屋</title>
+    <link rel="stylesheet" href="../colors_and_type.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--ch-background);
+    --color-foreground: var(--ch-foreground);
+    --color-card: var(--ch-card);
+    --color-card-foreground: var(--ch-card-foreground);
+    --color-popover: var(--ch-popover);
+    --color-popover-foreground: var(--ch-popover-foreground);
+    --color-primary: var(--ch-primary);
+    --color-primary-foreground: var(--ch-primary-foreground);
+    --color-muted: var(--ch-muted);
+    --color-muted-foreground: var(--ch-muted-foreground);
+    --color-border: var(--ch-border);
+    --color-input: var(--ch-input);
+    --color-ring: var(--ch-ring);
+    --radius-sm: var(--ch-radius-sm);
+    --radius-md: var(--ch-radius-md);
+    --radius-lg: var(--ch-radius-lg);
+  }
+  @layer base {
+    body { background: var(--ch-background); color: var(--ch-foreground); }
+  }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      [data-icon] {
+        display: inline-flex; align-items: center; justify-content: center;
+        -webkit-mask-size: contain; mask-size: contain;
+        -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+        -webkit-mask-position: center; mask-position: center;
+        background-color: currentColor;
+      }
+      .showcase-sky {
+          background: linear-gradient(180deg, #FBD3E8 0%, #FFE9D2 45%, #E0F6E6 75%, #BDE3B8 100%);
+          position: relative;
+          overflow: hidden;
+      }
+      .showcase-sky.theme-pixel {
+          background: linear-gradient(180deg, #7EC8E8 0%, #CFF3FF 45%, #E7F8C8 75%, #8B5A2B 100%);
+      }
+      .house-stage {
+          width: 100%;
+          max-width: 600px;
+          aspect-ratio: 4/3;
+          margin: 0 auto;
+          position: relative;
+      }
+      .tooltip-bubble {
+          position: absolute;
+          bottom: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+          background: rgba(0,0,0,0.8);
+          color: white;
+          padding: 8px 14px;
+          border-radius: 8px;
+          font-size: 12px;
+          white-space: nowrap;
+          pointer-events: none;
+          z-index: 10;
+          margin-bottom: 8px;
+      }
+      .tooltip-title { font-weight: 600; margin-bottom: 2px; }
+      .tooltip-desc { font-size: 11px; opacity: 0.8; }
+      .cloud {
+          position: absolute;
+          background: white;
+          border-radius: 50%;
+          opacity: 0.9;
+          animation: cloudFloat 20s linear infinite;
+      }
+      @keyframes cloudFloat {
+          0% { transform: translateX(-100px); }
+          100% { transform: translateX(calc(100vw + 100px)); }
+      }
+      .house-sun {
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          background: radial-gradient(circle, #FFD700, #FFA500);
+          box-shadow: 0 0 40px rgba(255, 215, 0, 0.6);
+      }
+      .info-panel {
+          position: fixed;
+          top: 90px;
+          right: 20px;
+          width: 240px;
+          z-index: 40;
+      }
+      .timeline-step { position: relative; transition: all 0.3s ease; }
+      .timeline-icon {
+          width: 48px; height: 48px;
+          border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          background: linear-gradient(135deg, var(--ch-primary-500), var(--ch-primary-600));
+          color: #fff; margin: 0 auto;
+          box-shadow: 0 2px 8px rgba(38, 150, 124, 0.3);
+      }
+      .timeline-line {
+          position: absolute;
+          top: 24px; left: 50%; transform: translateX(-50%);
+          width: 100%; height: 3px;
+          background: var(--ch-border); z-index: 0;
+      }
+      .timeline-line-fill {
+          position: absolute; top: 0; left: 0;
+          width: 100%; height: 100%;
+          background: linear-gradient(90deg, var(--ch-primary-500), var(--ch-accent-500));
+          border-radius: 2px;
+      }
+      .pixel-house {
+          width: 100%;
+          height: 100%;
+          position: relative;
+      }
+      .house-part {
+          transition: all 0.3s ease;
+      }
+      .house-part:hover {
+          background: rgba(255,255,255,0.1);
+      }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-border">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="house.html" class="flex items-center gap-2 text-muted-foreground hover:text-primary">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                <span class="text-sm font-medium">返回小屋主页</span>
+            </a>
+            <h1 id="nav-title" class="text-lg font-bold">我的职业小屋</h1>
+            <span class="ch-badge ch-badge-accent">
+                <i data-lucide="check-circle-2" class="w-3.5 h-3.5 mr-1"></i>100% 完成度
+            </span>
+            <button onclick="ch_logout()" title="退出登录" aria-label="退出登录"
+                    class="text-sm text-muted-foreground hover:text-red-600 flex items-center">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </nav>
+
+    <section class="showcase-sky pt-24 pb-16 relative min-h-[90vh] flex items-center">
+        <div class="absolute top-24 right-16 ch-animate-float">
+            <div class="house-sun"></div>
+        </div>
+        <div class="cloud" style="top: 80px; left: -50px; width: 80px; height: 30px; animation-delay: 0s;"></div>
+        <div class="cloud" style="top: 120px; left: -100px; width: 100px; height: 35px; animation-delay: -7s; animation-duration: 25s;"></div>
+        <div class="cloud" style="top: 160px; left: -80px; width: 60px; height: 25px; animation-delay: -14s; animation-duration: 30s;"></div>
+
+        <div class="w-full max-w-7xl mx-auto px-6 relative">
+            <div class="flex flex-col lg:flex-row items-center lg:items-start gap-6">
+                <div class="flex-1 w-full">
+                    <div class="house-stage">
+                        <div class="relative w-full h-full flex items-center justify-center">
+                            <div class="pixel-house">
+                                <div id="showcase-house" style="width:100%;height:100%;"></div>
+                            </div>
+
+                            <div class="house-part absolute bottom-0 left-0 right-0 h-[25%] cursor-pointer group" data-part="foundation">
+                                <div class="tooltip-bubble group-hover:opacity-100 group-hover:translate-y-0 opacity-0 translate-y-2 transition-all duration-300">
+                                    <div class="tooltip-title">基础信息</div>
+                                    <div id="tooltip-foundation" class="tooltip-desc">你的名字 · 你的职业 · 工作年限</div>
+                                </div>
+                            </div>
+
+                            <div class="house-part absolute bottom-[25%] left-[15%] right-[15%] h-[35%] cursor-pointer group" data-part="walls">
+                                <div class="tooltip-bubble group-hover:opacity-100 group-hover:translate-y-0 opacity-0 translate-y-2 transition-all duration-300">
+                                    <div class="tooltip-title">项目经历</div>
+                                    <div class="tooltip-desc">3个项目 · 实战经验积累</div>
+                                </div>
+                            </div>
+
+                            <div class="house-part absolute bottom-[40%] left-[20%] right-[20%] h-[25%] cursor-pointer group" data-part="window">
+                                <div class="tooltip-bubble group-hover:opacity-100 group-hover:translate-y-0 opacity-0 translate-y-2 transition-all duration-300">
+                                    <div class="tooltip-title">技能标签</div>
+                                    <div class="tooltip-desc">12项技能 · 全面点亮</div>
+                                </div>
+                            </div>
+
+                            <div class="house-part absolute bottom-[60%] left-[10%] right-[10%] h-[35%] cursor-pointer group" data-part="roof">
+                                <div class="tooltip-bubble group-hover:opacity-100 group-hover:translate-y-0 opacity-0 translate-y-2 transition-all duration-300">
+                                    <div class="tooltip-title">职业故事</div>
+                                    <div class="tooltip-desc">阅读全文 · 了解成长历程</div>
+                                </div>
+                            </div>
+
+                            <div class="house-part absolute bottom-0 left-0 w-[20%] h-[30%] cursor-pointer group" data-part="garden">
+                                <div class="tooltip-bubble group-hover:opacity-100 group-hover:translate-y-0 opacity-0 translate-y-2 transition-all duration-300" style="left:0; right:auto;">
+                                    <div class="tooltip-title">成就认证</div>
+                                    <div class="tooltip-desc">4项成就 · 点亮你的职业花园</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hidden lg:block text-center mt-2">
+                        <p class="text-muted-foreground text-sm">
+                            <i data-lucide="mouse-pointer-2" class="w-4 h-4 inline mr-1"></i>
+                            将鼠标悬停在小屋各部位，探索你的职业成就
+                        </p>
+                    </div>
+                </div>
+
+                <div class="hidden lg:block info-panel">
+                    <div class="ch-card p-5 space-y-4">
+                        <div class="flex items-center gap-3 pb-3 border-b border-border">
+                            <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/30 bg-primary/10 flex items-center justify-center">
+                                <span class="text-xl">👤</span>
+                            </div>
+                            <div>
+                                <h3 id="user-name-desktop" class="font-bold text-sm">你的名字</h3>
+                                <p id="user-title-desktop" class="text-xs text-muted-foreground">填写你的职业头衔</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="bg-primary/5 rounded-lg p-2.5 text-center">
+                                <div class="text-xl font-bold text-primary">3</div>
+                                <div class="text-xs text-muted-foreground">项目</div>
+                            </div>
+                            <div class="rounded-lg p-2.5 text-center" style="background:var(--ch-accent-50);">
+                                <div class="text-xl font-bold" style="color:var(--ch-accent-600);">12</div>
+                                <div class="text-xs text-muted-foreground">技能</div>
+                            </div>
+                            <div class="bg-primary/5 rounded-lg p-2.5 text-center">
+                                <div class="text-xl font-bold text-primary">4</div>
+                                <div class="text-xs text-muted-foreground">成就</div>
+                            </div>
+                            <div class="rounded-lg p-2.5 text-center" style="background:var(--ch-accent-50);">
+                                <div class="text-xl font-bold" style="color:var(--ch-accent-600);">4/7</div>
+                                <div class="text-xs text-muted-foreground">徽章</div>
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div><div class="flex justify-between text-xs mb-1">
+                                <span class="text-muted-foreground">小屋完成度</span>
+                                <span class="font-medium text-primary">100%</span>
+                            </div>
+                            <div class="w-full h-2 bg-muted rounded-full overflow-hidden">
+                                <div class="h-full rounded-full" style="width:100%; background:linear-gradient(90deg, var(--ch-primary-500), var(--ch-accent-500));"></div>
+                            </div>
+                        </div>
+                        <a href="house.html" class="ch-btn ch-btn-primary w-full justify-center text-sm py-2">
+                            <i data-lucide="home" class="w-4 h-4"></i>查看完整主页
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:hidden mt-4 max-w-md mx-auto">
+                <div class="ch-card p-4 space-y-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/30 bg-primary/10 flex items-center justify-center">
+                            <span class="text-xl">👤</span>
+                        </div>
+                        <div>
+                            <h3 id="user-name-mobile" class="font-bold">你的名字</h3>
+                            <p id="user-title-mobile" class="text-xs text-muted-foreground">填写你的职业头衔</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-4 gap-2">
+                        <div class="text-center"><div class="text-base font-bold text-primary">3</div><div class="text-xs text-muted-foreground">项目</div></div>
+                        <div class="text-center"><div class="text-base font-bold" style="color:var(--ch-accent-600);">12</div><div class="text-xs text-muted-foreground">技能</div></div>
+                        <div class="text-center"><div class="text-base font-bold text-primary">4</div><div class="text-xs text-muted-foreground">成就</div></div>
+                        <div class="text-center"><div class="text-base font-bold" style="color:var(--ch-accent-600);">4/7</div><div class="text-xs text-muted-foreground">徽章</div></div>
+                    </div>
+                    <a href="house.html" class="ch-btn ch-btn-primary w-full justify-center text-sm">
+                        <i data-lucide="home" class="w-4 h-4"></i>查看完整主页
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-14 px-6 bg-background">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-10">
+                <h2 class="text-2xl md:text-3xl font-bold mb-3">小屋成长历程</h2>
+                <p class="text-muted-foreground">从地基到花园，见证你的职业小屋一步步建成</p>
+            </div>
+            <div class="relative">
+                <div class="timeline-line hidden md:block"><div class="timeline-line-fill"></div></div>
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-6 md:gap-0">
+                    <div class="timeline-step text-center">
+                        <div class="timeline-icon mb-3"><i data-lucide="layers" class="w-5 h-5"></i></div>
+                        <h4 class="font-bold text-sm mb-1">地基</h4>
+                        <p class="text-xs text-muted-foreground mb-2">基础信息搭建</p>
+                        <span class="ch-badge">已完成</span>
+                        <p class="text-xs text-muted-foreground mt-2">2024.03.15</p>
+                    </div>
+                    <div class="timeline-step text-center">
+                        <div class="timeline-icon mb-3"><i data-lucide="brick-wall" class="w-5 h-5"></i></div>
+                        <h4 class="font-bold text-sm mb-1">墙壁</h4>
+                        <p class="text-xs text-muted-foreground mb-2">项目经历积累</p>
+                        <span class="ch-badge">已完成</span>
+                        <p class="text-xs text-muted-foreground mt-2">2024.05.20</p>
+                    </div>
+                    <div class="timeline-step text-center">
+                        <div class="timeline-icon mb-3" style="background:linear-gradient(135deg, var(--ch-accent-500), var(--ch-accent-600));">
+                            <i data-lucide="layout-grid" class="w-5 h-5"></i>
+                        </div>
+                        <h4 class="font-bold text-sm mb-1">窗户</h4>
+                        <p class="text-xs text-muted-foreground mb-2">技能标签点亮</p>
+                        <span class="ch-badge ch-badge-accent">已完成</span>
+                        <p class="text-xs text-muted-foreground mt-2">2024.08.10</p>
+                    </div>
+                    <div class="timeline-step text-center">
+                        <div class="timeline-icon mb-3"><i data-lucide="home" class="w-5 h-5"></i></div>
+                        <h4 class="font-bold text-sm mb-1">屋顶</h4>
+                        <p class="text-xs text-muted-foreground mb-2">职业故事书写</p>
+                        <span class="ch-badge">已完成</span>
+                        <p class="text-xs text-muted-foreground mt-2">2024.11.05</p>
+                    </div>
+                    <div class="timeline-step text-center">
+                        <div class="timeline-icon mb-3" style="background:linear-gradient(135deg, #22c55e, #16a34a);">
+                            <i data-lucide="flower-2" class="w-5 h-5"></i>
+                        </div>
+                        <h4 class="font-bold text-sm mb-1">花园</h4>
+                        <p class="text-xs text-muted-foreground mb-2">成就认证收获</p>
+                        <span class="ch-badge" style="background:#dcfce7; color:#166534; border-color:#bbf7d0;">已完成</span>
+                        <p class="text-xs text-muted-foreground mt-2">2025.01.20</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-14 grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="ch-card p-5 hover:shadow-md transition-shadow">
+                    <div class="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
+                        <i data-lucide="trophy" class="w-5 h-5 text-primary"></i></div>
+                    <h4 class="font-bold mb-2">首个项目上线</h4>
+                    <p class="text-sm text-muted-foreground mb-3">独立完成企业官网前端开发，PV突破10万</p>
+                    <span class="text-xs text-muted-foreground">2024.06.15</span>
+                </div>
+                <div class="ch-card p-5 hover:shadow-md transition-shadow">
+                    <div class="w-11 h-11 rounded-lg flex items-center justify-center mb-3" style="background:var(--ch-accent-50);">
+                        <i data-lucide="star" class="w-5 h-5" style="color:var(--ch-accent-600);"></i></div>
+                    <h4 class="font-bold mb-2">技能全栈升级</h4>
+                    <p class="text-sm text-muted-foreground mb-3">掌握React + Node.js全栈开发能力</p>
+                    <span class="text-xs text-muted-foreground">2024.09.28</span>
+                </div>
+                <div class="ch-card p-5 hover:shadow-md transition-shadow">
+                    <div class="w-11 h-11 rounded-lg bg-green-50 flex items-center justify-center mb-3">
+                        <i data-lucide="award" class="w-5 h-5 text-green-600"></i></div>
+                    <h4 class="font-bold mb-2">年度最佳新人</h4>
+                    <p class="text-sm text-muted-foreground mb-3">获得公司年度最佳新人奖，团队认可</p>
+                    <span class="text-xs text-muted-foreground">2025.01.10</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-14 px-6" style="background:linear-gradient(135deg, var(--ch-primary-50), var(--ch-accent-50));">
+        <div class="max-w-2xl mx-auto text-center">
+            <h2 class="text-2xl md:text-3xl font-bold mb-4">你的职业小屋已经建成！</h2>
+            <p class="text-muted-foreground mb-8">继续完善，解锁更多成就徽章，让你的小屋更加璀璨夺目</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="house.html" class="ch-btn ch-btn-primary">
+                    <i data-lucide="home" class="w-4 h-4"></i>回到小屋主页
+                </a>
+                <a href="share.html" class="ch-btn ch-btn-outline">
+                    <i data-lucide="share-2" class="w-4 h-4"></i>分享我的小屋
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <script src="../house-builder.js"></script>
+    <script>
+        lucide.createIcons();
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                var user = ch_getProfile();
+                if (!user) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                var name = user.name || '你的名字';
+                var title = user.title || '填写你的职业头衔';
+                var experience = user.experience ? user.experience + '年经验' : '工作年限';
+                var completion = user.completion !== undefined ? user.completion : 10;
+                var skillsCount = user.skills ? user.skills.length : 0;
+                var projectsCount = user.projects ? user.projects.length : 0;
+                var badgesCount = user.badges ? user.badges.length : 0;
+                var themeKey = ch_normalizeTheme(user.theme || 'minimal');
+
+                document.title = name + '的职业小屋 - 全景展示';
+                var showcaseSection = document.querySelector('.showcase-sky');
+                if (showcaseSection) showcaseSection.classList.add('theme-' + themeKey);
+                renderHouse('showcase-house', themeKey, 5);
+                document.getElementById('nav-title').textContent = name + '的职业小屋';
+                document.getElementById('tooltip-foundation').textContent = name + ' · ' + title + ' · ' + experience;
+
+                var nameDesktop = document.getElementById('user-name-desktop');
+                var titleDesktop = document.getElementById('user-title-desktop');
+                if (nameDesktop) nameDesktop.textContent = name;
+                if (titleDesktop) titleDesktop.textContent = title;
+
+                var nameMobile = document.getElementById('user-name-mobile');
+                var titleMobile = document.getElementById('user-title-mobile');
+                if (nameMobile) nameMobile.textContent = name;
+                if (titleMobile) titleMobile.textContent = title;
+
+                var statElements = document.querySelectorAll('.info-panel .grid .text-xl.font-bold');
+                if (statElements.length >= 2) {
+                    statElements[0].textContent = projectsCount;
+                    statElements[1].textContent = skillsCount;
+                }
+
+                var mobileStatElements = document.querySelectorAll('.lg\\:hidden .grid .text-base.font-bold');
+                if (mobileStatElements.length >= 2) {
+                    mobileStatElements[0].textContent = projectsCount;
+                    mobileStatElements[1].textContent = skillsCount;
+                }
+            } catch(e) {
+                console.error('加载用户数据失败:', e);
+            }
+        });
+    </script>
+</body>
+</html>
