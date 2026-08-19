@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据仪表盘 - 职业小屋</title>
+    <link rel="stylesheet" href="../colors_and_type.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--ch-background);
+    --color-foreground: var(--ch-foreground);
+    --color-card: var(--ch-card);
+    --color-card-foreground: var(--ch-card-foreground);
+    --color-popover: var(--ch-popover);
+    --color-popover-foreground: var(--ch-popover-foreground);
+    --color-primary: var(--ch-primary);
+    --color-primary-foreground: var(--ch-primary-foreground);
+    --color-muted: var(--ch-muted);
+    --color-muted-foreground: var(--ch-muted-foreground);
+    --color-border: var(--ch-border);
+    --color-input: var(--ch-input);
+    --color-ring: var(--ch-ring);
+    --radius-sm: var(--ch-radius-sm);
+    --radius-md: var(--ch-radius-md);
+    --radius-lg: var(--ch-radius-lg);
+  }
+  @layer base {
+    body { background: var(--ch-background); color: var(--ch-foreground); }
+  }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      [data-icon] {
+        display: inline-flex; align-items: center; justify-content: center;
+        -webkit-mask-size: contain; mask-size: contain;
+        -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+        -webkit-mask-position: center; mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased bg-background">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-border">
+        <div class="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+            <a href="house.html" class="flex items-center gap-2 text-muted-foreground hover:text-primary">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i><span class="text-sm">返回小屋</span>
+            </a>
+            <span class="font-medium">数据仪表盘</span>
+            <button onclick="ch_logout()" title="退出登录" aria-label="退出登录"
+                    class="text-sm text-muted-foreground hover:text-red-600 flex items-center">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+            </button>
+            <span class="w-16"></span>
+        </div>
+    </nav>
+
+    <main class="pt-20 pb-16 px-6">
+        <div class="max-w-5xl mx-auto">
+            <section class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <div class="ch-card p-5">
+                    <div id="stat-views" class="text-3xl font-bold text-primary mb-1">0</div>
+                    <div class="text-sm text-muted-foreground">总访问量</div>
+                    <div class="text-xs text-muted-foreground mt-1">继续加油~</div>
+                </div>
+                <div class="ch-card p-5">
+                    <div id="stat-completion" class="text-3xl font-bold" style="color:var(--ch-accent-600);">10%</div>
+                    <div class="text-sm text-muted-foreground">小屋完成度</div>
+                    <div class="text-xs text-muted-foreground mt-1">去完善小屋</div>
+                </div>
+                <div class="ch-card p-5">
+                    <div id="stat-badges" class="text-3xl font-bold text-green-600">1</div>
+                    <div class="text-sm text-muted-foreground">成就徽章</div>
+                    <div class="text-xs text-muted-foreground mt-1">共 7 枚</div>
+                </div>
+                <div class="ch-card p-5">
+                    <div id="stat-skills" class="text-3xl font-bold text-purple-600">0</div>
+                    <div class="text-sm text-muted-foreground">技能标签</div>
+                    <div class="text-xs text-muted-foreground mt-1">持续增加中</div>
+                </div>
+            </section>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <section class="ch-card p-6">
+                    <h3 class="font-bold mb-4 flex items-center gap-2">
+                        <i data-lucide="radar" class="w-5 h-5 text-primary"></i>
+                        技能雷达
+                    </h3>
+                    <div class="aspect-square max-w-xs mx-auto flex items-center justify-center">
+                        <div class="text-center text-muted-foreground">
+                            <div class="text-5xl mb-2">📊</div>
+                            <p class="text-sm">技能雷达图</p>
+                            <p class="text-xs">前端 / 后端 / 设计 / 沟通 / 管理</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="ch-card p-6">
+                    <h3 class="font-bold mb-4 flex items-center gap-2">
+                        <i data-lucide="trending-up" class="w-5 h-5" style="color:var(--ch-accent-500);"></i>
+                        访问趋势
+                    </h3>
+                    <div class="h-48 flex items-end justify-between gap-1 px-2">
+                        <div class="flex-1 bg-primary/20 rounded-t" style="height:40%"></div>
+                        <div class="flex-1 bg-primary/30 rounded-t" style="height:55%"></div>
+                        <div class="flex-1 bg-primary/40 rounded-t" style="height:45%"></div>
+                        <div class="flex-1 bg-primary/50 rounded-t" style="height:70%"></div>
+                        <div class="flex-1 bg-primary/60 rounded-t" style="height:60%"></div>
+                        <div class="flex-1 bg-primary/80 rounded-t" style="height:85%"></div>
+                        <div class="flex-1 bg-primary rounded-t" style="height:100%"></div>
+                    </div>
+                    <div class="flex justify-between text-xs text-muted-foreground mt-2 px-2">
+                        <span>周一</span><span>周二</span><span>周三</span>
+                        <span>周四</span><span>周五</span><span>周六</span><span>周日</span>
+                    </div>
+                </section>
+            </div>
+
+            <section class="ch-card p-6 mt-6">
+                <h3 class="font-bold mb-6 flex items-center gap-2">
+                    <i data-lucide="calendar" class="w-5 h-5 text-primary"></i>
+                    成长时间线
+                </h3>
+                <div id="timeline" class="space-y-4">
+                    <div class="flex gap-4">
+                        <div class="w-3 h-3 rounded-full bg-purple-500 mt-1.5 flex-shrink-0"></div>
+                        <div>
+                            <div class="text-sm font-medium">创建了职业小屋</div>
+                            <div class="text-xs text-muted-foreground">刚刚</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="../house-builder.js"></script>
+    <script>
+        lucide.createIcons();
+
+        function formatTime(timestamp) {
+            var now = Date.now();
+            var diff = now - timestamp;
+            var minutes = Math.floor(diff / 60000);
+            var hours = Math.floor(diff / 3600000);
+            var days = Math.floor(diff / 86400000);
+
+            if (minutes < 1) return '刚刚';
+            if (minutes < 60) return minutes + '分钟前';
+            if (hours < 24) return hours + '小时前';
+            if (days < 30) return days + '天前';
+            return Math.floor(days / 30) + '个月前';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                var user = ch_getProfile();
+                if (!user) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                var skillsCount = user.skills ? user.skills.length : 0;
+                var projectsCount = user.projects ? user.projects.length : 0;
+                var badgesCount = user.badges ? user.badges.length : 0;
+                if (badgesCount === 0) badgesCount = 1;
+                var completion = user.completion !== undefined ? user.completion : 10;
+                var views = user.views || 0;
+
+                document.getElementById('stat-views').textContent = views;
+                document.getElementById('stat-completion').textContent = completion + '%';
+                document.getElementById('stat-badges').textContent = badgesCount;
+                document.getElementById('stat-skills').textContent = skillsCount;
+
+                var timeline = document.getElementById('timeline');
+                if (timeline) {
+                    timeline.innerHTML = '';
+                    var events = [];
+
+                    if (user.loginAt) {
+                        events.push({
+                            text: '创建了职业小屋',
+                            time: user.loginAt,
+                            color: 'bg-purple-500'
+                        });
+                    }
+
+                    if (user.skills && user.skills.length > 0) {
+                        events.push({
+                            text: '添加了 ' + user.skills.length + ' 个技能标签',
+                            time: user.loginAt + 3600000,
+                            color: 'bg-primary'
+                        });
+                    }
+
+                    if (user.projects && user.projects.length > 0) {
+                        events.push({
+                            text: '添加了 ' + user.projects.length + ' 个项目经历',
+                            time: user.loginAt + 7200000,
+                            color: 'var(--ch-accent-500)'
+                        });
+                    }
+
+                    if (badgesCount > 1) {
+                        events.push({
+                            text: '解锁了新徽章',
+                            time: user.loginAt + 10800000,
+                            color: 'bg-green-500'
+                        });
+                    }
+
+                    events.sort(function(a, b) { return b.time - a.time; });
+
+                    events.forEach(function(event) {
+                        var div = document.createElement('div');
+                        div.className = 'flex gap-4';
+                        var colorStyle = event.color.startsWith('bg-') ? 'background-color: var(--ch-primary-500);' : 'background: ' + event.color + ';';
+                        div.innerHTML = '<div class="w-3 h-3 rounded-full mt-1.5 flex-shrink-0" style="' + colorStyle + '"></div>' +
+                            '<div>' +
+                            '<div class="text-sm font-medium">' + event.text + '</div>' +
+                            '<div class="text-xs text-muted-foreground">' + formatTime(event.time) + '</div>' +
+                            '</div>';
+                        timeline.appendChild(div);
+                    });
+                }
+            } catch(e) {
+                console.error('加载仪表盘数据失败:', e);
+            }
+        });
+    </script>
+</body>
+</html>
