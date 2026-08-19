@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建职业小屋 - 职业小屋</title>
+    <link rel="stylesheet" href="../colors_and_type.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--ch-background);
+    --color-foreground: var(--ch-foreground);
+    --color-card: var(--ch-card);
+    --color-card-foreground: var(--ch-card-foreground);
+    --color-popover: var(--ch-popover);
+    --color-popover-foreground: var(--ch-popover-foreground);
+    --color-primary: var(--ch-primary);
+    --color-primary-foreground: var(--ch-primary-foreground);
+    --color-muted: var(--ch-muted);
+    --color-muted-foreground: var(--ch-muted-foreground);
+    --color-border: var(--ch-border);
+    --color-input: var(--ch-input);
+    --color-ring: var(--ch-ring);
+    --radius-sm: var(--ch-radius-sm);
+    --radius-md: var(--ch-radius-md);
+    --radius-lg: var(--ch-radius-lg);
+  }
+  @layer base {
+    body { background: var(--ch-background); color: var(--ch-foreground); }
+  }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      [data-icon] {
+        display: inline-flex; align-items: center; justify-content: center;
+        -webkit-mask-size: contain; mask-size: contain;
+        -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+        -webkit-mask-position: center; mask-position: center;
+        background-color: currentColor;
+      }
+      .step-indicator {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          font-weight: 600;
+          font-size: 14px;
+      }
+      .step-indicator.active {
+          background: var(--ch-primary-500);
+          color: white;
+      }
+      .step-indicator.completed {
+          background: var(--ch-primary-100);
+          color: var(--ch-primary-700);
+      }
+      .step-indicator.pending {
+          background: var(--ch-gray-100);
+          color: var(--ch-gray-400);
+      }
+      .step-line {
+          flex: 1;
+          height: 3px;
+          background: var(--ch-gray-200);
+          margin: 0 8px;
+          border-radius: 2px;
+      }
+      .step-line.completed {
+          background: var(--ch-primary-500);
+      }
+      .step-page {
+          display: none;
+      }
+      .step-page.active {
+          display: block;
+          animation: ch-fadeIn 0.4s ease-out;
+      }
+      .skill-tag {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 6px 12px;
+          border-radius: 999px;
+          font-size: 13px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          border: 1.5px solid var(--ch-gray-200);
+          background: white;
+      }
+      .skill-tag.selected {
+          background: var(--ch-accent-50);
+          border-color: var(--ch-accent-300);
+          color: var(--ch-accent-700);
+      }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased bg-background">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-border">
+        <div class="max-w-3xl mx-auto px-6 h-14 flex items-center justify-between">
+            <a href="theme.html" class="flex items-center gap-2 text-muted-foreground hover:text-primary">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i><span class="text-sm">返回</span>
+            </a>
+            <span class="font-medium">创建职业小屋</span>
+            <span class="ch-badge" id="step-badge">第 1 步</span>
+        </div>
+    </nav>
+
+    <main class="pt-20 pb-16 px-6">
+        <div class="max-w-2xl mx-auto">
+            <div class="flex items-center justify-center mb-6">
+                <div class="step-indicator active" id="step-1-indicator">1</div>
+                <div class="step-line" id="line-1"></div>
+                <div class="step-indicator pending" id="step-2-indicator">2</div>
+                <div class="step-line" id="line-2"></div>
+                <div class="step-indicator pending" id="step-3-indicator">3</div>
+                <div class="step-line" id="line-3"></div>
+                <div class="step-indicator pending" id="step-4-indicator">4</div>
+            </div>
+
+            <div class="ch-card p-4 mb-8 overflow-hidden">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-lg">🏠</span>
+                        <span class="font-medium text-sm" id="house-stage-text">空地</span>
+                    </div>
+                    <span class="text-xs text-muted-foreground" id="house-progress-text">建造进度 0%</span>
+                </div>
+                <div id="house-preview" class="rounded-lg overflow-hidden border border-border" style="height:180px;"></div>
+            </div>
+
+            <div id="step-1" class="step-page active">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="user" class="w-8 h-8 text-primary"></i></div>
+                    <h2 class="text-xl font-bold mb-2">基础信息</h2>
+                    <p class="text-muted-foreground text-sm">填写你的基本职业信息</p>
+                </div>
+
+                <div class="ch-card p-6 space-y-5">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">职业方向 <span class="text-red-500">*</span></label>
+                        <select id="input-title" class="ch-input">
+                            <option value="">请选择你的职业方向</option>
+                            <option value="前端开发工程师">前端开发工程师</option>
+                            <option value="后端开发工程师">后端开发工程师</option>
+                            <option value="全栈开发工程师">全栈开发工程师</option>
+                            <option value="产品经理">产品经理</option>
+                            <option value="UI设计师">UI设计师</option>
+                            <option value="数据分析师">数据分析师</option>
+                            <option value="运营专员">运营专员</option>
+                            <option value="市场经理">市场经理</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-2">工作年限</label>
+                        <select id="input-experience" class="ch-input">
+                            <option value="">请选择工作年限</option>
+                            <option value="应届">应届毕业生</option>
+                            <option value="1-3">1-3年</option>
+                            <option value="3-5">3-5年</option>
+                            <option value="5-10">5-10年</option>
+                            <option value="10+">10年以上</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-2">所在城市</label>
+                        <input type="text" id="input-location" placeholder="例如：上海" class="ch-input" maxlength="20">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-2">一句话简介</label>
+                        <textarea id="input-bio" placeholder="用一句话介绍自己..." 
+                                  class="ch-input min-h-[80px] resize-none" maxlength="100"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step-2" class="step-page">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background:var(--ch-accent-50);">
+                        <i data-lucide="zap" class="w-8 h-8" style="color:var(--ch-accent-600);"></i></div>
+                    <h2 class="text-xl font-bold mb-2">技能标签</h2>
+                    <p class="text-muted-foreground text-sm">选择你的核心技能（可多选）</p>
+                </div>
+
+                <div class="ch-card p-6">
+                    <div class="mb-4">
+                        <h4 class="text-sm font-medium mb-3 text-muted-foreground">开发技能</h4>
+                        <div class="flex flex-wrap gap-2" id="skills-dev">
+                            <span class="skill-tag" onclick="toggleSkill(this)">JavaScript</span>
+                            <span class="skill-tag" onclick="toggleSkill(this)">TypeScript</span>
+                            <span class="skill-tag" onclick="toggleSkill(this)">React</span>
+                            <span class="skill-tag" onclick="toggleSkill(this)">Vue.js</span>
+                            <span class="skill-tag" onclick="toggleSkill(this)">Node.js</span>
+                            <span class="skill-tag" onclick="toggleSkill(this)">Python</span>
+                            <span class="skill-tag" onclick="toggleSkill(this)">Java</span>
+                            <span class="skill-tag" onclick="toggleSkill(this)">Go</span>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <h4 class="text-sm font-medium mb-3 text-muted-foreground">设计技能</h4>
+                        <div class="flex flex-wrap gap-2" id="skills-design">
+                            <span class="skill-tag" onclick="toggleSkill(this)">Figma</span>
+                            <span class="skill-tag" onclick="toggleSkill(this)">Sketch</span>
+                            <span class="skill-tag" onclick="toggleSkill(this)">Photoshop</span>
+                            <span class="skill-tag" onclick="toggleSkill(this)">Illustrator</span>
+                            <span class="skill-tag" onclick="toggleSkill(this)">UI设计</span>
+                            <span class="skill-tag" onclick="toggleSkill(this)">交互设计</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-medium mb-3 text-muted-foreground">其他技能</h4>
+                        <div class="flex flex-wrap gap-2" id="skills-other">
+                            <span class="skill-tag" onclick="toggleSkill(this)">产品设计</span>
+                            <span class="skill-tag" onclick="toggleSkill(this)">数据分析</span>
+                            <span class="skill-tag" onclick="toggleSkill(this)">项目管理</span>
+                            <span class="skill-tag" onclick="toggleSkill(this)">团队协作</span>
+                            <span class="skill-tag" onclick="toggleSkill(this)">Git</span>
+                            <span class="skill-tag" onclick="toggleSkill(this)">Linux</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="step-3" class="step-page">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 rounded-2xl bg-green-50 flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="briefcase" class="w-8 h-8 text-green-600"></i></div>
+                    <h2 class="text-xl font-bold mb-2">项目经历</h2>
+                    <p class="text-muted-foreground text-sm">添加你的代表性项目（至少1个）</p>
+                </div>
+
+                <div class="space-y-4" id="projects-container">
+                    <div class="ch-card p-5 project-item">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="font-medium text-sm">项目 1</span>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1.5">项目名称</label>
+                                <input type="text" class="ch-input project-name" placeholder="例如：企业官网重构项目" maxlength="50">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-1.5">年份</label>
+                                    <select class="ch-input project-year">
+                                        <option value="">选择年份</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2023">2023</option>
+                                        <option value="2022">2022</option>
+                                        <option value="2021">2021</option>
+                                        <option value="2020">2020</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1.5">角色</label>
+                                    <input type="text" class="ch-input project-role" placeholder="你的角色" maxlength="20">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1.5">项目描述</label>
+                                <textarea class="ch-input project-desc resize-none min-h-[80px]" 
+                                          placeholder="简要描述项目内容和你的贡献..." maxlength="200"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1.5">技术标签（用逗号分隔）</label>
+                                <input type="text" class="ch-input project-tags" placeholder="React, TypeScript, Node.js" maxlength="100">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="addProject()" class="w-full mt-4 py-3 border-2 border-dashed border-border rounded-lg text-muted-foreground hover:border-primary hover:text-primary transition-colors text-sm flex items-center justify-center gap-2">
+                    <i data-lucide="plus" class="w-4 h-4"></i>添加更多项目
+                </button>
+            </div>
+
+            <div id="step-4" class="step-page">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 rounded-2xl bg-purple-50 flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="book-open" class="w-8 h-8 text-purple-600"></i></div>
+                    <h2 class="text-xl font-bold mb-2">职业故事</h2>
+                    <p class="text-muted-foreground text-sm">写下你的职业成长故事</p>
+                </div>
+
+                <div class="ch-card p-6">
+                    <label class="block text-sm font-medium mb-2">你的职业故事</label>
+                    <textarea id="input-story" 
+                              placeholder="分享你的职业成长历程，比如：你是如何进入这个行业的？有哪些重要的转折点？未来的目标是什么？..."
+                              class="ch-input min-h-[200px] resize-none" maxlength="500"></textarea>
+                    <div class="flex justify-between items-center mt-2">
+                        <span class="text-xs text-muted-foreground">写得越详细，小屋就越完整哦</span>
+                        <span class="text-xs text-muted-foreground" id="story-count">0 / 500</span>
+                    </div>
+                </div>
+
+                <div class="ch-card p-6 mt-6" style="background:linear-gradient(135deg, var(--ch-primary-50), var(--ch-accent-50));">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-white shadow-sm flex items-center justify-center text-2xl">🎉</div>
+                        <div class="flex-1">
+                            <h3 class="font-bold mb-1">小屋即将建成！</h3>
+                            <p class="text-sm text-muted-foreground">完成后你可以随时编辑和完善小屋内容</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between mt-8">
+                <button id="btn-prev" onclick="prevStep()" class="ch-btn ch-btn-ghost" disabled>
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i>上一步
+                </button>
+                <button id="btn-next" onclick="nextStep()" class="ch-btn ch-btn-primary">
+                    下一步 <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="../house-builder.js"></script>
+    <script>
+        lucide.createIcons();
+        if (!ch_getProfile()) { window.location.href = 'login.html'; }
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        function getHouseStage() {
+            var user = ch_getProfile() || {};
+            var stage = 1;
+            if (user.title) stage = 2;
+            if (user.skills && user.skills.length >= 3) stage = 3;
+            if (user.projects && user.projects.length >= 1) stage = 4;
+            if (user.story && user.story.length > 10) stage = 5;
+            return Math.max(stage, currentStep);
+        }
+
+        function updateHousePreview() {
+            var user = ch_getProfile() || {};
+            var theme = user.theme || 'minimal';
+            var stage = getHouseStage();
+            renderHouse('house-preview', theme, stage);
+
+            var stageNames = ['空地', '地基完成', '墙壁+窗户', '屋顶+门', '装饰中', '小屋完成！'];
+            document.getElementById('house-stage-text').textContent = stageNames[Math.min(stage, 5)];
+            document.getElementById('house-progress-text').textContent = '建造进度 ' + Math.min(stage * 20, 100) + '%';
+        }
+
+        function updateStepUI() {
+            document.getElementById('step-badge').textContent = '第 ' + currentStep + ' 步';
+            
+            for (let i = 1; i <= totalSteps; i++) {
+                const indicator = document.getElementById('step-' + i + '-indicator');
+                indicator.classList.remove('active', 'completed', 'pending');
+                
+                if (i < currentStep) {
+                    indicator.classList.add('completed');
+                    indicator.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i>';
+                } else if (i === currentStep) {
+                    indicator.classList.add('active');
+                    indicator.textContent = i;
+                } else {
+                    indicator.classList.add('pending');
+                    indicator.textContent = i;
+                }
+
+                const line = document.getElementById('line-' + i);
+                if (line) {
+                    line.classList.remove('completed');
+                    if (i < currentStep) {
+                        line.classList.add('completed');
+                    }
+                }
+            }
+
+            for (let i = 1; i <= totalSteps; i++) {
+                const page = document.getElementById('step-' + i);
+                page.classList.remove('active');
+                if (i === currentStep) {
+                    page.classList.add('active');
+                }
+            }
+
+            const prevBtn = document.getElementById('btn-prev');
+            const nextBtn = document.getElementById('btn-next');
+            
+            prevBtn.disabled = currentStep === 1;
+            prevBtn.style.opacity = currentStep === 1 ? '0.5' : '1';
+            prevBtn.style.cursor = currentStep === 1 ? 'not-allowed' : 'pointer';
+
+            if (currentStep === totalSteps) {
+                nextBtn.innerHTML = '完成创建 <i data-lucide="check" class="w-4 h-4"></i>';
+            } else {
+                nextBtn.innerHTML = '下一步 <i data-lucide="arrow-right" class="w-4 h-4"></i>';
+            }
+            
+            lucide.createIcons();
+            updateHousePreview();
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                saveCurrentStep();
+                currentStep++;
+                updateStepUI();
+            } else {
+                saveCurrentStep();
+                completeCreate();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStepUI();
+            }
+        }
+
+        function toggleSkill(el) {
+            el.classList.toggle('selected');
+        }
+
+        let projectCount = 1;
+
+        function addProject() {
+            projectCount++;
+            const container = document.getElementById('projects-container');
+            const newProject = document.createElement('div');
+            newProject.className = 'ch-card p-5 project-item';
+            newProject.innerHTML = `
+                <div class="flex items-center justify-between mb-4">
+                    <span class="font-medium text-sm">项目 ${projectCount}</span>
+                    <button onclick="this.closest('.project-item').remove(); projectCount--;" class="text-red-500 hover:text-red-600 text-sm flex items-center gap-1">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>删除
+                    </button>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1.5">项目名称</label>
+                        <input type="text" class="ch-input project-name" placeholder="项目名称" maxlength="50">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1.5">年份</label>
+                            <select class="ch-input project-year">
+                                <option value="">选择年份</option>
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                                <option value="2022">2022</option>
+                                <option value="2021">2021</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1.5">角色</label>
+                            <input type="text" class="ch-input project-role" placeholder="你的角色" maxlength="20">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1.5">项目描述</label>
+                        <textarea class="ch-input project-desc resize-none min-h-[80px]" placeholder="项目描述..." maxlength="200"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1.5">技术标签（用逗号分隔）</label>
+                        <input type="text" class="ch-input project-tags" placeholder="React, TypeScript" maxlength="100">
+                    </div>
+                </div>
+            `;
+            container.appendChild(newProject);
+            lucide.createIcons();
+        }
+
+        document.getElementById('input-story').addEventListener('input', function() {
+            document.getElementById('story-count').textContent = this.value.length + ' / 500';
+        });
+
+        function saveCurrentStep() {
+            try {
+                var user = ch_getProfile() || {};
+                
+                if (currentStep === 1) {
+                    user.title = document.getElementById('input-title').value;
+                    user.experience = document.getElementById('input-experience').value;
+                    user.location = document.getElementById('input-location').value;
+                    user.bio = document.getElementById('input-bio').value;
+                    if (user.title) user.completion = 25;
+                }
+                
+                if (currentStep === 2) {
+                    const selectedSkills = [];
+                    document.querySelectorAll('.skill-tag.selected').forEach(tag => {
+                        selectedSkills.push(tag.textContent.trim());
+                    });
+                    user.skills = selectedSkills;
+                    if (selectedSkills.length >= 3) user.completion = 50;
+                }
+
+                if (currentStep === 3) {
+                    const projects = [];
+                    document.querySelectorAll('.project-item').forEach(item => {
+                        const name = item.querySelector('.project-name').value.trim();
+                        const year = item.querySelector('.project-year').value;
+                        const desc = item.querySelector('.project-desc').value.trim();
+                        const tagsStr = item.querySelector('.project-tags').value.trim();
+                        const tags = tagsStr ? tagsStr.split(/[,，]/).map(t => t.trim()).filter(t => t) : [];
+                        
+                        if (name) {
+                            projects.push({ name, year, desc, tags });
+                        }
+                    });
+                    user.projects = projects;
+                    if (projects.length >= 1) user.completion = 75;
+                }
+
+                if (currentStep === 4) {
+                    user.story = document.getElementById('input-story').value;
+                    if (user.story && user.story.length > 10) {
+                        user.completion = 100;
+                        if (!user.badges) user.badges = [];
+                        if (!user.badges.includes('first-house')) user.badges.push('first-house');
+                        if (user.skills && user.skills.length >= 5 && !user.badges.includes('skill-master')) {
+                            user.badges.push('skill-master');
+                        }
+                        if (user.projects && user.projects.length >= 3 && !user.badges.includes('project-master')) {
+                            user.badges.push('project-master');
+                        }
+                        if (user.story.length > 50 && !user.badges.includes('storyteller')) {
+                            user.badges.push('storyteller');
+                        }
+                    }
+                }
+
+                ch_saveProfile(user);
+            } catch(e) {
+                console.warn('Save error:', e);
+            }
+        }
+
+        function completeCreate() {
+            window.location.href = 'house.html';
+        }
+
+        updateStepUI();
+    </script>
+</body>
+</html>
