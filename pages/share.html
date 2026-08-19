@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分享我的职业小屋 - 职业小屋</title>
+    <link rel="stylesheet" href="../colors_and_type.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--ch-background);
+    --color-foreground: var(--ch-foreground);
+    --color-card: var(--ch-card);
+    --color-card-foreground: var(--ch-card-foreground);
+    --color-popover: var(--ch-popover);
+    --color-popover-foreground: var(--ch-popover-foreground);
+    --color-primary: var(--ch-primary);
+    --color-primary-foreground: var(--ch-primary-foreground);
+    --color-muted: var(--ch-muted);
+    --color-muted-foreground: var(--ch-muted-foreground);
+    --color-border: var(--ch-border);
+    --color-input: var(--ch-input);
+    --color-ring: var(--ch-ring);
+    --radius-sm: var(--ch-radius-sm);
+    --radius-md: var(--ch-radius-md);
+    --radius-lg: var(--ch-radius-lg);
+  }
+  @layer base {
+    body { background: var(--ch-background); color: var(--ch-foreground); }
+  }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      [data-icon] {
+        display: inline-flex; align-items: center; justify-content: center;
+        -webkit-mask-size: contain; mask-size: contain;
+        -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+        -webkit-mask-position: center; mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased bg-background">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-border">
+        <div class="max-w-3xl mx-auto px-6 h-14 flex items-center justify-between">
+            <a href="house.html" class="flex items-center gap-2 text-muted-foreground hover:text-primary">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i><span class="text-sm">返回小屋</span>
+            </a>
+            <span class="font-medium">分享小屋</span>
+            <button onclick="ch_logout()" title="退出登录" aria-label="退出登录"
+                    class="text-sm text-muted-foreground hover:text-red-600 flex items-center">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+            </button>
+            <span class="w-16"></span>
+        </div>
+    </nav>
+
+    <main class="pt-20 pb-16 px-6">
+        <div class="max-w-xl mx-auto">
+            <section class="mb-8">
+                <h2 class="text-lg font-bold mb-4">分享卡片预览</h2>
+                <div class="ch-card overflow-hidden">
+                    <div class="p-6 text-white" style="background:linear-gradient(135deg, var(--ch-primary-500), var(--ch-primary-700));">
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 rounded-full border-2 border-white/30 overflow-hidden bg-white/20 flex items-center justify-center">
+                                <span class="text-3xl">👤</span>
+                            </div>
+                            <div>
+                                <h3 id="share-name" class="text-xl font-bold">你的名字</h3>
+                                <p id="share-title" class="text-white/80 text-sm">填写你的职业头衔</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-5 bg-white">
+                        <div class="grid grid-cols-3 gap-4 text-center">
+                            <div><div id="stat-projects" class="text-lg font-bold text-primary">0</div><div class="text-xs text-muted-foreground">项目</div></div>
+                            <div><div id="stat-skills" class="text-lg font-bold" style="color:var(--ch-accent-600);">0</div><div class="text-xs text-muted-foreground">技能</div></div>
+                            <div><div id="stat-badges" class="text-lg font-bold text-green-600">0</div><div class="text-xs text-muted-foreground">成就</div></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-lg font-bold mb-4">分享链接</h2>
+                <div class="ch-card p-5">
+                    <div class="flex gap-2 mb-4">
+                        <input type="text" id="share-link" readonly
+                               class="ch-input flex-1 text-sm"
+                               value="https://career-house.com/u/demo123">
+                        <button class="ch-btn ch-btn-primary whitespace-nowrap" onclick="copyLink()">
+                            <i data-lucide="copy" class="w-4 h-4"></i>复制链接
+                        </button>
+                    </div>
+                    <p class="text-xs text-muted-foreground">
+                        将链接发送给朋友，对方即可查看你的职业小屋
+                    </p>
+                </div>
+            </section>
+
+            <section class="mb-8">
+                <h2 class="text-lg font-bold mb-4">分享到</h2>
+                <div class="ch-card p-5">
+                    <div class="grid grid-cols-4 gap-4">
+                        <button class="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-muted transition-colors">
+                            <div class="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center text-white text-xl">💬</div>
+                            <span class="text-xs">微信好友</span>
+                        </button>
+                        <button class="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-muted transition-colors">
+                            <div class="w-12 h-12 rounded-full bg-green-600 flex items-center justify-center text-white text-xl">🟢</div>
+                            <span class="text-xs">朋友圈</span>
+                        </button>
+                        <button class="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-muted transition-colors">
+                            <div class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl">🐦</div>
+                            <span class="text-xs">微博</span>
+                        </button>
+                        <button class="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-muted transition-colors">
+                            <div class="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center text-white text-xl">💼</div>
+                            <span class="text-xs">LinkedIn</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="text-lg font-bold mb-4">扫码查看</h2>
+                <div class="ch-card p-6 text-center">
+                    <div class="w-40 h-40 mx-auto bg-white border border-border rounded-lg flex items-center justify-center mb-3">
+                    <div class="text-center text-muted-foreground text-xs">
+                        <div class="text-4xl mb-2">📱</div>
+                        二维码占位
+                    </div>
+                </div>
+                <p class="text-sm text-muted-foreground">用手机扫码查看你的职业小屋</p>
+            </section>
+        </div>
+    </main>
+
+    <script src="../house-builder.js"></script>
+    <script>
+        lucide.createIcons();
+        function copyLink() {
+            var input = document.getElementById('share-link');
+            input.select();
+            document.execCommand('copy');
+            var btn = document.querySelector('button[onclick="copyLink()"]');
+            var originalText = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="check" class="w-4 h-4"></i>已复制';
+            lucide.createIcons();
+            setTimeout(function() {
+                btn.innerHTML = originalText;
+                lucide.createIcons();
+            }, 2000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                var user = ch_getProfile();
+                if (!user) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                if (user.name) document.getElementById('share-name').textContent = user.name;
+                if (user.title) document.getElementById('share-title').textContent = user.title;
+
+                var projectsCount = user.projects ? user.projects.length : 0;
+                var skillsCount = user.skills ? user.skills.length : 0;
+                var badgesCount = user.badges ? user.badges.length : 0;
+
+                document.getElementById('stat-projects').textContent = projectsCount;
+                document.getElementById('stat-skills').textContent = skillsCount;
+                document.getElementById('stat-badges').textContent = badgesCount;
+
+                var shareLink = 'https://career-house.com/u/' + (user.id || 'user' + Date.now());
+                document.getElementById('share-link').value = shareLink;
+            } catch(e) {
+                console.error('加载用户数据失败:', e);
+            }
+        });
+    </script>
+</body>
+</html>
