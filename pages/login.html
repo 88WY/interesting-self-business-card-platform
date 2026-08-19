@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 / 一键进入 - 职业小屋 Career House</title>
+    <link rel="stylesheet" href="../colors_and_type.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--ch-background);
+    --color-foreground: var(--ch-foreground);
+    --color-card: var(--ch-card);
+    --color-card-foreground: var(--ch-card-foreground);
+    --color-popover: var(--ch-popover);
+    --color-popover-foreground: var(--ch-popover-foreground);
+    --color-primary: var(--ch-primary);
+    --color-primary-foreground: var(--ch-primary-foreground);
+    --color-muted: var(--ch-muted);
+    --color-muted-foreground: var(--ch-muted-foreground);
+    --color-border: var(--ch-border);
+    --color-input: var(--ch-input);
+    --color-ring: var(--ch-ring);
+    --radius-sm: var(--ch-radius-sm);
+    --radius-md: var(--ch-radius-md);
+    --radius-lg: var(--ch-radius-lg);
+  }
+  @layer base {
+    body { background: var(--ch-background); color: var(--ch-foreground); }
+  }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      [data-icon] {
+        display: inline-flex; align-items: center; justify-content: center;
+        -webkit-mask-size: contain; mask-size: contain;
+        -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+        -webkit-mask-position: center; mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+    <main id="page-login" class="min-h-screen flex">
+        <section class="hidden lg:flex lg:w-1/2 relative overflow-hidden flex-col justify-center items-center p-12"
+                 style="background: linear-gradient(135deg, var(--ch-primary-500) 0%, var(--ch-primary-700) 100%);">
+            <div class="absolute inset-0 opacity-10">
+                <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5" opacity="0.3"/>
+                    </pattern></defs>
+                    <rect width="100%" height="100%" fill="url(#grid)" />
+                </svg>
+            </div>
+            <div class="absolute top-10 right-10 w-64 h-64 rounded-full opacity-20 blur-3xl" style="background: var(--ch-accent-400);"></div>
+            <div class="absolute bottom-10 left-10 w-80 h-80 rounded-full opacity-15 blur-3xl" style="background: var(--ch-primary-300);"></div>
+
+            <div class="relative z-10 text-center max-w-md ch-animate-fadeIn">
+                <div class="w-20 h-20 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center mx-auto mb-8 ch-animate-float"
+                     style="border: 1px solid rgba(255,255,255,0.2);">
+                    <span class="text-4xl">🏠</span>
+                </div>
+                <h1 class="text-4xl font-bold text-white mb-4">职业小屋</h1>
+                <p class="text-xl text-white/80 mb-2">Career House</p>
+                <p class="text-white/60 leading-relaxed">
+                    像玩游戏一样打造你的职业名片<br/>
+                    记录成长，点亮技能，收集成就
+                </p>
+                <div class="mt-10 grid grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-white mb-1">9+</div>
+                        <div class="text-xs text-white/60">核心页面</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-white mb-1">7</div>
+                        <div class="text-xs text-white/60">成就徽章</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-white mb-1">100%</div>
+                        <div class="text-xs text-white/60">响应式</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="flex-1 flex items-center justify-center p-6 lg:p-12 bg-background">
+            <div class="w-full max-w-sm">
+                <div class="lg:hidden text-center mb-8">
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
+                         style="background: linear-gradient(135deg, var(--ch-primary-500), var(--ch-primary-600));">
+                        <span class="text-3xl">🏠</span>
+                    </div>
+                    <h1 class="text-2xl font-bold">职业小屋</h1>
+                    <p class="text-sm text-muted-foreground mt-1">Career House</p>
+                </div>
+
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-[var(--ch-gray-900)] mb-2">欢迎来到职业小屋</h2>
+                    <p class="text-sm text-[var(--ch-gray-500)]">开启你的职业名片建造之旅</p>
+                </div>
+
+                <div class="mb-5">
+                    <label class="block text-sm font-medium text-[var(--ch-gray-700)] mb-2">给自己起个名字吧</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--ch-gray-400)]">
+                            <i data-lucide="user" class="w-4 h-4"></i></span>
+                        <input type="text" data-dom-id="input-nickname" id="nickname-input"
+                               placeholder="请输入你的昵称" maxlength="20"
+                               class="w-full pl-11 pr-4 py-3 text-sm border border-[var(--ch-gray-200)] rounded-[var(--ch-radius-md)] bg-white" />
+                    </div>
+                </div>
+
+                <button data-dom-id="btn-direct-login"
+                    class="w-full py-4 px-6 text-base font-semibold text-white rounded-[var(--ch-radius-md)] flex items-center justify-center gap-3"
+                    style="background: linear-gradient(135deg, var(--ch-accent-500) 0%, var(--ch-accent-600) 100%); box-shadow: 0 4px 14px rgba(249, 115, 22, 0.4);">
+                    <i data-lucide="zap" class="w-5 h-5"></i>
+                    <span>一键直接登录</span>
+                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </button>
+                <p class="text-center text-xs text-[var(--ch-gray-400)] mt-3">无需注册，立即体验全部功能</p>
+
+                <div class="flex items-center gap-4 my-8">
+                    <div class="flex-1 h-px bg-[var(--ch-gray-200)]"></div>
+                    <span class="text-sm text-[var(--ch-gray-400)] font-medium">或</span>
+                    <div class="flex-1 h-px bg-[var(--ch-gray-200)]"></div>
+                </div>
+
+                <div class="space-y-4">
+                    <p class="text-sm font-medium text-[var(--ch-gray-700)]">使用手机号登录</p>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--ch-gray-400)]">
+                            <i data-lucide="phone" class="w-4 h-4"></i></span>
+                        <input type="tel" data-dom-id="input-phone" id="phone-input"
+                               placeholder="请输入手机号" maxlength="11"
+                               class="w-full pl-11 pr-4 py-3 text-sm border border-[var(--ch-gray-200)] rounded-[var(--ch-radius-md)] bg-white" />
+                    </div>
+                    <button data-dom-id="btn-phone-login"
+                        class="w-full py-3 px-6 text-sm font-semibold text-white rounded-[var(--ch-radius-md)] flex items-center justify-center gap-2"
+                        style="background: var(--ch-primary-500);">
+                        <i data-lucide="log-in" class="w-4 h-4"></i>
+                        <span>登录</span>
+                    </button>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-[var(--ch-gray-100)]">
+                    <p class="text-xs text-center text-[var(--ch-gray-400)] leading-relaxed">
+                        登录即表示你同意
+                        <a href="#" class="text-[var(--ch-primary-600)] hover:underline">用户协议</a>
+                        和 <a href="#" class="text-[var(--ch-primary-600)] hover:underline">隐私政策</a>
+                    </p>
+                </div>
+            </div>
+            <p class="text-center text-xs text-[var(--ch-gray-400)] mt-8">© 2025 Career House 职业小屋</p>
+        </section>
+    </main>
+
+    <script src="../house-builder.js"></script>
+    <script>
+        function ch_buildAccountId(kind, value) {
+            var v = String(value || '').trim().toLowerCase();
+            return (kind === 'phone' ? 'phone:' : 'guest:') + v;
+        }
+
+        function ch_defaultProfile(session) {
+            return {
+                uid: session.uid,
+                name: session.name,
+                phone: session.phone || '',
+                isGuest: session.isGuest,
+                loginAt: session.loginAt,
+                theme: 'minimal',
+                title: '',
+                experience: '',
+                bio: '',
+                story: '',
+                avatar: '',
+                location: '',
+                skills: [],
+                projects: [],
+                badges: [],
+                completion: 10
+            };
+        }
+
+        function ch_migrateLegacyProfile(uid) {
+            try {
+                var d = localStorage.getItem('ch_user');
+                if (!d) return null;
+                var legacy = JSON.parse(d);
+                if (!legacy || legacy.uid) return null;
+                var hasContent = legacy.name || legacy.title || legacy.bio || legacy.story ||
+                                 (legacy.skills && legacy.skills.length) ||
+                                 (legacy.projects && legacy.projects.length);
+                if (!hasContent) return null;
+                legacy.uid = uid;
+                delete legacy.isGuest;
+                return legacy;
+            } catch (e) { return null; }
+        }
+
+        function ch_login(kind, value, nickname) {
+            var uid = ch_buildAccountId(kind, value);
+            var existing = null;
+            try {
+                var d = localStorage.getItem(ch_profileKey(uid));
+                existing = d ? JSON.parse(d) : null;
+            } catch (e) {}
+            var legacy = existing ? null : ch_migrateLegacyProfile(uid);
+            var session = { uid: uid, name: nickname, isGuest: kind !== 'phone', loginAt: Date.now() };
+            if (kind === 'phone') session.phone = value;
+            ch_saveSession(session);
+            if (legacy) {
+                legacy.name = nickname;
+                legacy.loginAt = session.loginAt;
+                ch_saveProfile(legacy);
+                window.location.href = 'house.html';
+                return;
+            }
+            if (existing) {
+                existing.name = nickname;
+                existing.loginAt = session.loginAt;
+                ch_saveProfile(existing);
+                window.location.href = 'house.html';
+                return;
+            }
+            ch_saveProfile(ch_defaultProfile(session));
+            window.location.href = 'theme.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var currentSession = ch_getSession();
+            if (currentSession) {
+                if (currentSession.uid) {
+                    if (ch_getProfile()) {
+                        window.location.href = 'house.html';
+                        return;
+                    }
+                    ch_clearSession();
+                }
+            }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            var directBtn = document.querySelector('[data-dom-id="btn-direct-login"]');
+            var nicknameInput = document.querySelector('[data-dom-id="input-nickname"]');
+            function triggerDirectLogin() {
+                var nickname = nicknameInput.value.trim();
+                if (!nickname) { nicknameInput.focus(); return; }
+                ch_login('guest', nickname, nickname);
+            }
+            if (directBtn) directBtn.addEventListener('click', triggerDirectLogin);
+            if (nicknameInput) nicknameInput.addEventListener('keypress', e => { if (e.key === 'Enter') triggerDirectLogin(); });
+
+            var phoneBtn = document.querySelector('[data-dom-id="btn-phone-login"]');
+            var phoneInput = document.querySelector('[data-dom-id="input-phone"]');
+            if (phoneBtn && phoneInput) {
+                phoneBtn.addEventListener('click', function() {
+                    var phone = phoneInput.value.trim();
+                    if (!phone || !/^1\d{10}$/.test(phone)) { phoneInput.focus(); return; }
+                    ch_login('phone', phone, '用户' + phone.slice(-4));
+                });
+                phoneInput.addEventListener('keypress', e => { if (e.key === 'Enter') phoneBtn.click(); });
+            }
+        });
+    </script>
+</body>
+</html>
