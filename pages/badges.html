@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成就徽章 - 职业小屋</title>
+    <link rel="stylesheet" href="../colors_and_type.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--ch-background);
+    --color-foreground: var(--ch-foreground);
+    --color-card: var(--ch-card);
+    --color-card-foreground: var(--ch-card-foreground);
+    --color-popover: var(--ch-popover);
+    --color-popover-foreground: var(--ch-popover-foreground);
+    --color-primary: var(--ch-primary);
+    --color-primary-foreground: var(--ch-primary-foreground);
+    --color-muted: var(--ch-muted);
+    --color-muted-foreground: var(--ch-muted-foreground);
+    --color-border: var(--ch-border);
+    --color-input: var(--ch-input);
+    --color-ring: var(--ch-ring);
+    --radius-sm: var(--ch-radius-sm);
+    --radius-md: var(--ch-radius-md);
+    --radius-lg: var(--ch-radius-lg);
+  }
+  @layer base {
+    body { background: var(--ch-background); color: var(--ch-foreground); }
+  }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      [data-icon] {
+        display: inline-flex; align-items: center; justify-content: center;
+        -webkit-mask-size: contain; mask-size: contain;
+        -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+        -webkit-mask-position: center; mask-position: center;
+        background-color: currentColor;
+      }
+      .badge-card {
+          transition: all 0.3s ease;
+      }
+      .badge-card:hover {
+          transform: translateY(-4px);
+      }
+      .badge-icon {
+          width: 64px;
+          height: 64px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 28px;
+          margin: 0 auto 12px;
+      }
+      .badge-unlocked .badge-icon {
+          background: linear-gradient(135deg, var(--ch-primary-100), var(--ch-primary-200));
+          box-shadow: 0 4px 12px rgba(38, 150, 124, 0.2);
+      }
+      .badge-locked .badge-icon {
+          background: var(--ch-gray-100);
+          filter: grayscale(100%);
+          opacity: 0.5;
+      }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased bg-background">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-border">
+        <div class="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
+            <a href="house.html" class="flex items-center gap-2 text-muted-foreground hover:text-primary">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i><span class="text-sm">返回小屋</span>
+            </a>
+            <span class="font-medium">成就徽章</span>
+            <span id="badge-count" class="ch-badge">1 / 7</span>
+            <button onclick="ch_logout()" title="退出登录" aria-label="退出登录"
+                    class="text-sm text-muted-foreground hover:text-red-600 flex items-center">
+                <i data-lucide="log-out" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </nav>
+
+    <main class="pt-20 pb-16 px-6">
+        <div class="max-w-4xl mx-auto">
+            <section class="ch-card p-6 mb-8" style="background:linear-gradient(135deg, var(--ch-primary-50), var(--ch-accent-50));">
+                <div class="flex items-center gap-6">
+                    <div class="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center text-3xl">🏆</div>
+                    <div class="flex-1">
+                        <h2 class="text-xl font-bold mb-1">徽章收集进度</h2>
+                        <p id="badge-progress-text" class="text-sm text-muted-foreground mb-3">已获得 1 枚徽章，继续努力解锁更多！</p>
+                        <div class="w-full h-3 bg-white/60 rounded-full overflow-hidden">
+                            <div id="badge-progress-bar" class="h-full rounded-full" style="width:14%; background:linear-gradient(90deg, var(--ch-primary-500), var(--ch-accent-500));"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-8">
+                <h3 class="font-bold mb-4 flex items-center gap-2">
+                    <i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>
+                    已获得 (4)
+                </h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="badge-card badge-unlocked ch-card p-5 text-center">
+                        <div class="badge-icon">🏠</div>
+                        <h4 class="font-bold text-sm mb-1">初建小屋</h4>
+                        <p class="text-xs text-muted-foreground mb-2">创建你的第一座小屋</p>
+                        <span class="ch-badge text-xs">已获得</span>
+                    </div>
+                    <div class="badge-card badge-unlocked ch-card p-5 text-center">
+                        <div class="badge-icon">⚡</div>
+                        <h4 class="font-bold text-sm mb-1">技能达人</h4>
+                        <p class="text-xs text-muted-foreground mb-2">添加5个以上技能标签</p>
+                        <span class="ch-badge text-xs">已获得</span>
+                    </div>
+                    <div class="badge-card badge-unlocked ch-card p-5 text-center">
+                        <div class="badge-icon">📝</div>
+                        <h4 class="font-bold text-sm mb-1">项目达人</h4>
+                        <p class="text-xs text-muted-foreground mb-2">添加3个以上项目经历</p>
+                        <span class="ch-badge text-xs">已获得</span>
+                    </div>
+                    <div class="badge-card badge-unlocked ch-card p-5 text-center">
+                        <div class="badge-icon">✨</div>
+                        <h4 class="font-bold text-sm mb-1">故事讲述者</h4>
+                        <p class="text-xs text-muted-foreground mb-2">完成职业故事填写</p>
+                        <span class="ch-badge text-xs">已获得</span>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3 class="font-bold mb-4 flex items-center gap-2">
+                    <i data-lucide="lock" class="w-5 h-5 text-muted-foreground"></i>
+                    待解锁 (3)
+                </h3>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="badge-card badge-locked ch-card p-5 text-center">
+                        <div class="badge-icon">🎨</div>
+                        <h4 class="font-bold text-sm mb-1">美学大师</h4>
+                        <p class="text-xs text-muted-foreground mb-2">自定义小屋主题</p>
+                        <span class="text-xs text-muted-foreground">🔒 未解锁</span>
+                    </div>
+                    <div class="badge-card badge-locked ch-card p-5 text-center">
+                        <div class="badge-icon">🚀</div>
+                        <h4 class="font-bold text-sm mb-1">社交达人</h4>
+                        <p class="text-xs text-muted-foreground mb-2">分享小屋给10位好友</p>
+                        <span class="text-xs text-muted-foreground">🔒 未解锁</span>
+                    </div>
+                    <div class="badge-card badge-locked ch-card p-5 text-center">
+                        <div class="badge-icon">👑</div>
+                        <h4 class="font-bold text-sm mb-1">完美小屋</h4>
+                        <p class="text-xs text-muted-foreground mb-2">小屋完成度达到100%</p>
+                        <span class="text-xs text-muted-foreground">🔒 未解锁</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="../house-builder.js"></script>
+    <script>
+        lucide.createIcons();
+
+        var allBadges = [
+            { id: 'first-house', name: '初建小屋', desc: '创建你的第一座小屋', icon: '🏠' },
+            { id: 'skill-master', name: '技能达人', desc: '添加5个以上技能标签', icon: '⚡' },
+            { id: 'project-master', name: '项目达人', desc: '添加3个以上项目经历', icon: '📝' },
+            { id: 'storyteller', name: '故事讲述者', desc: '完成职业故事填写', icon: '✨' },
+            { id: 'aesthetic', name: '美学大师', desc: '自定义小屋主题', icon: '🎨' },
+            { id: 'social', name: '社交达人', desc: '分享小屋给10位好友', icon: '🚀' },
+            { id: 'perfect', name: '完美小屋', desc: '小屋完成度达到100%', icon: '👑' }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                var user = ch_getProfile();
+                if (!user) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                var userBadges = user.badges || [];
+                if (userBadges.length === 0) {
+                    userBadges = ['first-house'];
+                }
+
+                var unlockedCount = userBadges.length;
+                var totalCount = allBadges.length;
+                var progress = Math.round((unlockedCount / totalCount) * 100);
+
+                document.getElementById('badge-count').textContent = unlockedCount + ' / ' + totalCount;
+                document.getElementById('badge-progress-text').textContent = '已获得 ' + unlockedCount + ' 枚徽章，继续努力解锁更多！';
+                document.getElementById('badge-progress-bar').style.width = progress + '%';
+
+                var unlockedSection = document.querySelector('.mb-8 .grid');
+                var lockedSection = document.querySelector('section:last-child .grid');
+
+                if (unlockedSection) {
+                    unlockedSection.innerHTML = '';
+                    allBadges.forEach(function(badge) {
+                        if (userBadges.indexOf(badge.id) !== -1) {
+                            var div = document.createElement('div');
+                            div.className = 'badge-card badge-unlocked ch-card p-5 text-center';
+                            div.innerHTML = '<div class="badge-icon">' + badge.icon + '</div>' +
+                                '<h4 class="font-bold text-sm mb-1">' + badge.name + '</h4>' +
+                                '<p class="text-xs text-muted-foreground mb-2">' + badge.desc + '</p>' +
+                                '<span class="ch-badge text-xs">已获得</span>';
+                            unlockedSection.appendChild(div);
+                        }
+                    });
+
+                    var unlockedHeading = document.querySelector('.mb-8 h3');
+                    if (unlockedHeading) {
+                        unlockedHeading.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5 text-green-500"></i>已获得 (' + unlockedCount + ')';
+                    }
+                }
+
+                if (lockedSection) {
+                    lockedSection.innerHTML = '';
+                    var lockedCount = 0;
+                    allBadges.forEach(function(badge) {
+                        if (userBadges.indexOf(badge.id) === -1) {
+                            lockedCount++;
+                            var div = document.createElement('div');
+                            div.className = 'badge-card badge-locked ch-card p-5 text-center';
+                            div.innerHTML = '<div class="badge-icon">' + badge.icon + '</div>' +
+                                '<h4 class="font-bold text-sm mb-1">' + badge.name + '</h4>' +
+                                '<p class="text-xs text-muted-foreground mb-2">' + badge.desc + '</p>' +
+                                '<span class="text-xs text-muted-foreground">🔒 未解锁</span>';
+                            lockedSection.appendChild(div);
+                        }
+                    });
+
+                    var lockedHeading = document.querySelector('section:last-child h3');
+                    if (lockedHeading) {
+                        lockedHeading.innerHTML = '<i data-lucide="lock" class="w-5 h-5 text-muted-foreground"></i>待解锁 (' + lockedCount + ')';
+                    }
+                }
+
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            } catch(e) {
+                console.error('加载徽章数据失败:', e);
+            }
+        });
+    </script>
+</body>
+</html>
