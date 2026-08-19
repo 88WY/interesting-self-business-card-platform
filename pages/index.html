@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>职业小屋 Career House - 像玩游戏一样打造你的职业名片</title>
+    <link rel="stylesheet" href="../colors_and_type.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.1/dist/index.global.js"></script>
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <style type="text/tailwindcss">
+  @theme inline {
+    --color-background: var(--ch-background);
+    --color-foreground: var(--ch-foreground);
+    --color-card: var(--ch-card);
+    --color-card-foreground: var(--ch-card-foreground);
+    --color-popover: var(--ch-popover);
+    --color-popover-foreground: var(--ch-popover-foreground);
+    --color-primary: var(--ch-primary);
+    --color-primary-foreground: var(--ch-primary-foreground);
+    --color-muted: var(--ch-muted);
+    --color-muted-foreground: var(--ch-muted-foreground);
+    --color-border: var(--ch-border);
+    --color-input: var(--ch-input);
+    --color-ring: var(--ch-ring);
+    --radius-sm: var(--ch-radius-sm);
+    --radius-md: var(--ch-radius-md);
+    --radius-lg: var(--ch-radius-lg);
+  }
+  @layer base {
+    body { background: var(--ch-background); color: var(--ch-foreground); }
+  }
+    </style>
+    <style>
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      [data-icon] {
+        display: inline-flex; align-items: center; justify-content: center;
+        -webkit-mask-size: contain; mask-size: contain;
+        -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+        -webkit-mask-position: center; mask-position: center;
+        background-color: currentColor;
+      }
+    </style>
+</head>
+<body class="min-h-screen font-sans antialiased">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-border">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="w-9 h-9 rounded-xl flex items-center justify-center"
+                      style="background: linear-gradient(135deg, var(--ch-primary-500), var(--ch-primary-600));">
+                    <i data-lucide="home" class="w-5 h-5 text-white"></i></span>
+                <span class="font-bold text-lg">职业小屋</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#features" class="text-sm text-muted-foreground hover:text-primary">功能特色</a>
+                <a href="#how" class="text-sm text-muted-foreground hover:text-primary">使用流程</a>
+            </div>
+            <a href="login.html" class="ch-btn ch-btn-primary text-sm">
+                立即开始 <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+        </div>
+    </nav>
+
+    <section class="pt-32 pb-20 px-6 relative overflow-hidden ch-gradient-hero">
+        <div class="absolute top-32 right-20 w-72 h-72 rounded-full blur-3xl opacity-30"
+             style="background: var(--ch-accent-400);"></div>
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <span class="ch-badge ch-badge-accent mb-6">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 mr-1"></i>全新体验 · 游戏化简历
+            </span>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6" style="line-height:1.2;">
+                像玩游戏一样<br/>
+                <span style="background: linear-gradient(135deg, var(--ch-primary-500), var(--ch-accent-500));
+                             -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                  打造你的职业名片
+                </span>
+            </h1>
+            <p class="text-lg text-muted-foreground max-w-2xl mx-auto mb-10">
+                告别枯燥的简历填写，用建造小屋的方式记录你的职业成长。
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="login.html" class="ch-btn ch-btn-accent text-base py-3 px-8">
+                    <i data-lucide="zap" class="w-5 h-5"></i>免费开始建造
+                </a>
+                <a href="house-showcase.html" class="ch-btn ch-btn-outline text-base py-3 px-8">
+                    <i data-lucide="play" class="w-4 h-4"></i>查看示例
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-20 px-6 bg-background">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-14">
+                <h2 class="text-3xl font-bold mb-4">为什么选择职业小屋？</h2>
+                <p class="text-muted-foreground">用游戏化思维重新定义个人品牌展示</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="ch-card p-6 hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                        <i data-lucide="gamepad-2" class="w-6 h-6 text-primary"></i></div>
+                    <h3 class="text-lg font-bold mb-2">游戏化体验</h3>
+                    <p class="text-sm text-muted-foreground">搭建小屋的过程就是梳理职业经历的过程</p>
+                </div>
+                <div class="ch-card p-6 hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style="background:var(--ch-accent-50);">
+                        <i data-lucide="palette" class="w-6 h-6" style="color:var(--ch-accent-600);"></i></div>
+                    <h3 class="text-lg font-bold mb-2">精美视觉呈现</h3>
+                    <p class="text-sm text-muted-foreground">浪漫简约风与像素方块风，两种独特视觉风格</p>
+                </div>
+                <div class="ch-card p-6 hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center mb-4">
+                        <i data-lucide="share-2" class="w-6 h-6 text-green-600"></i></div>
+                    <h3 class="text-lg font-bold mb-2">一键分享传播</h3>
+                    <p class="text-sm text-muted-foreground">生成专属链接和分享卡片，多平台分享</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="how" class="py-20 px-6" style="background:var(--ch-primary-50);">
+        <div class="max-w-5xl mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-4">四步建成你的职业小屋</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-12">
+                <div class="text-center">
+                    <div class="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mx-auto mb-4 text-2xl font-bold text-primary">1</div>
+                    <h4 class="font-bold mb-2">选择主题</h4><p class="text-sm text-muted-foreground">挑选你喜欢的小屋风格</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mx-auto mb-4 text-2xl font-bold text-primary">2</div>
+                    <h4 class="font-bold mb-2">填写信息</h4><p class="text-sm text-muted-foreground">逐步完善职业经历</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mx-auto mb-4 text-2xl font-bold text-primary">3</div>
+                    <h4 class="font-bold mb-2">解锁成就</h4><p class="text-sm text-muted-foreground">收集徽章点亮技能树</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center mx-auto mb-4 text-2xl font-bold" style="color:var(--ch-accent-600);">4</div>
+                    <h4 class="font-bold mb-2">分享展示</h4><p class="text-sm text-muted-foreground">一键生成分享链接</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 px-6 bg-background text-center">
+        <h2 class="text-3xl font-bold mb-4">准备好建造你的职业小屋了吗？</h2>
+        <p class="text-muted-foreground mb-8">立即开始，免费体验全部功能</p>
+        <a href="login.html" class="ch-btn ch-btn-accent text-lg py-4 px-10">
+            <i data-lucide="rocket" class="w-5 h-5"></i>立即开始建造
+        </a>
+    </section>
+
+    <script src="../house-builder.js"></script>
+    <script>
+        lucide.createIcons();
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                var session = ch_getSession();
+                if (session) {
+                    document.querySelectorAll('a[href="login.html"]').forEach(function(btn) {
+                        btn.setAttribute('href', 'house.html');
+                    });
+                }
+            } catch(e) {}
+        });
+    </script>
+</body>
+</html>
